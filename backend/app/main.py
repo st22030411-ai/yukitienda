@@ -32,7 +32,7 @@ app = FastAPI(
 )
 
 # CORS — en producción solo permite el mismo origen
-_cors_origins = ["http://localhost:8000", "http://localhost:3000"]
+_cors_origins = ["http://localhost:8000", "http://localhost:3000", "https://yukitiendafront.onrender.com",]
 if BASE_URL and BASE_URL.startswith("http"):
     _cors_origins.append(BASE_URL)
 

@@ -814,7 +814,7 @@ async function processPayment() {
     document.getElementById('payBtnText').textContent = 'Procesando...';
 
     try {
-        const response = await fetch('/api/create-payment', {
+        const response = await fetch('https://yukitiendaback1.onrender.com/api/create-payment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ buyer_name: name, buyer_email: email }),
