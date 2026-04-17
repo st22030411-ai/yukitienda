@@ -364,7 +364,7 @@ function doLogin() {
     // Simulación local:
     const stored = localStorage.getItem('trueque_users');
     const users = stored ? JSON.parse(stored) : [];
-    const user = users.find(u => u.email === email && u.password === hashSimple(password));
+    const user = users.find(u => u.email === email && u.password === password);
 
     if (!user) { errEl.textContent = 'Correo o contraseña incorrectos.'; return; }
 
@@ -398,7 +398,7 @@ function doRegister() {
         id: 'u_' + Date.now(),
         name,
         email,
-        password: hashSimple(password),
+        password: password,
         avatar: '',
     };
     users.push(newUser);
@@ -797,10 +797,10 @@ function closeCheckoutIfOutside(e) {
 
 // ── Flujo de pago real con MercadoPago ───────
 async function processPayment() {
-    const name  = document.getElementById('ckName').value.trim();
+    const name = document.getElementById('ckName').value.trim();
     const email = document.getElementById('ckEmail').value.trim();
     const errEl = document.getElementById('checkoutError');
-    const btn   = document.getElementById('payBtn');
+    const btn = document.getElementById('payBtn');
 
     errEl.textContent = '';
 
