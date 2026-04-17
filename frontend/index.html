@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="description" content="Compra y vende artículos de segunda mano cerca de ti">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="assets/favicon-32.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <title>TRUEQUE — Segunda Mano</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       HEADER
+  ═══════════════════════════════════════════ -->
+  <header class="header" id="header">
+    <div class="header-inner">
+
+      <!-- Logo -->
+      <a href="#" class="logo" onclick="scrollToTop()">
+        <span class="logo-text">TRUEQUE</span>
+        <span class="logo-dot"></span>
+      </a>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+            <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M13 13L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Buscar productos..." autocomplete="off">
+          <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+        </div>
+        <!-- Category filters -->
+        <div class="filters" id="filterRow">
+          <button class="filter-btn active" data-cat="all" onclick="filterCat(this)">Todo</button>
+          <button class="filter-btn" data-cat="ropa" onclick="filterCat(this)">Ropa</button>
+          <button class="filter-btn" data-cat="calzado" onclick="filterCat(this)">Calzado</button>
+          <button class="filter-btn" data-cat="pantalones" onclick="filterCat(this)">Pantalones</button>
+          <button class="filter-btn" data-cat="perfume" onclick="filterCat(this)">Perfumes</button>
+          <button class="filter-btn" data-cat="accesorio" onclick="filterCat(this)">Accesorios</button>
+          <button class="filter-btn" data-cat="electronico" onclick="filterCat(this)">Electrónica</button>
+          <button class="filter-btn" data-cat="otro" onclick="filterCat(this)">Otro</button>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="header-actions">
+        <button class="action-btn sell-btn" id="sellBtn" onclick="openSell()" title="Vender">
+          <svg viewBox="0 0 20 20" fill="none">
+            <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/>
+          </svg>
+          <span>Vender</span>
+        </button>
+        <button class="action-btn icon-btn" id="cartBtn" onclick="openCart()" title="Carrito">
+          <svg viewBox="0 0 20 20" fill="none">
+            <path d="M3 3H4.5L6.5 13H15L17 6H5" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter"/>
+            <circle cx="8" cy="16.5" r="1" fill="currentColor"/>
+            <circle cx="14" cy="16.5" r="1" fill="currentColor"/>
+          </svg>
+          <span class="badge" id="cartBadge">0</span>
+        </button>
+        <button class="action-btn icon-btn" id="userBtn" onclick="toggleUserPanel()" title="Usuario">
+          <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════
+       USER PANEL (sidebar derecho)
+  ═══════════════════════════════════════════ -->
+  <div class="overlay" id="overlayUser" onclick="closeUserPanel()"></div>
+  <aside class="user-panel" id="userPanel">
+
+    <!-- Estado: NO logueado -->
+    <div class="panel-section" id="authSection">
+      <div class="panel-header">
+        <span class="panel-title">Acceder</span>
+        <button class="close-btn" onclick="closeUserPanel()">✕</button>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="tab-btn active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
+        <button class="tab-btn" id="tabRegister" onclick="switchTab('register')">Crear cuenta</button>
+      </div>
+
+      <!-- Login -->
+      <div class="auth-form" id="formLogin">
+        <div class="field">
+          <label>Correo</label>
+          <input type="email" id="loginEmail" placeholder="tu@correo.com">
+        </div>
+        <div class="field">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" placeholder="••••••••">
+        </div>
+        <div class="form-error" id="loginError"></div>
+        <button class="btn-primary full" onclick="doLogin()">Entrar</button>
+      </div>
+
+      <!-- Register -->
+      <div class="auth-form hidden" id="formRegister">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="regName" placeholder="Tu nombre">
+        </div>
+        <div class="field">
+          <label>Correo</label>
+          <input type="email" id="regEmail" placeholder="tu@correo.com">
+        </div>
+        <div class="field">
+          <label>Contraseña</label>
+          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div class="form-error" id="registerError"></div>
+        <button class="btn-primary full" onclick="doRegister()">Crear cuenta</button>
+      </div>
+    </div>
+
+    <!-- Estado: Logueado -->
+    <div class="panel-section hidden" id="profileSection">
+      <div class="panel-header">
+        <span class="panel-title">Mi perfil</span>
+        <button class="close-btn" onclick="closeUserPanel()">✕</button>
+      </div>
+
+      <div class="profile-info">
+        <div class="avatar-wrap">
+          <div class="avatar" id="avatarDisplay">?</div>
+          <label class="avatar-edit" title="Cambiar foto">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.2"/></svg>
+            <input type="file" accept="image/*" onchange="changeAvatar(this)" style="display:none">
+          </label>
+        </div>
+        <div class="profile-name" id="profileName">Usuario</div>
+        <div class="profile-email" id="profileEmail">correo@email.com</div>
+      </div>
+
+      <div class="profile-stats">
+        <div class="stat">
+          <span class="stat-num" id="statProducts">0</span>
+          <span class="stat-label">publicados</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num" id="statSold">0</span>
+          <span class="stat-label">vendidos</span>
+        </div>
+      </div>
+
+      <div class="section-label">Mis productos</div>
+      <div class="my-products" id="myProductsList">
+        <div class="empty-state-small">Aún no tienes productos.</div>
+      </div>
+
+      <button class="btn-ghost full logout-btn" onclick="doLogout()">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════
+       CARRITO (sidebar derecho)
+  ═══════════════════════════════════════════ -->
+  <div class="overlay" id="overlayCart" onclick="closeCart()"></div>
+  <aside class="cart-panel" id="cartPanel">
+    <div class="panel-header">
+      <span class="panel-title">Carrito</span>
+      <button class="close-btn" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="empty-state-small">Tu carrito está vacío.</div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-total">
+        <span>Total</span>
+        <span id="cartTotal">$0</span>
+      </div>
+      <button class="btn-primary full" onclick="openCheckout()">Ir a pagar</button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL: CREAR PRODUCTO
+  ═══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="sellOverlay" onclick="closeSellIfOutside(event)">
+    <div class="modal sell-modal" id="sellModal">
+      <div class="modal-header">
+        <span class="modal-title">Publicar producto</span>
+        <button class="close-btn" onclick="closeSell()">✕</button>
+      </div>
+
+      <!-- Subida de fotos -->
+      <div class="photo-section">
+        <div class="photo-upload-area" id="photoUploadArea" onclick="triggerPhotoInput()">
+          <svg viewBox="0 0 40 40" fill="none">
+            <rect x="4" y="8" width="32" height="24" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="14" cy="18" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 28l8-8 6 6 4-4 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+          <span>Añadir fotos</span>
+          <span class="photo-hint">Máximo 10 fotos</span>
+          <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)" style="display:none">
+        </div>
+        <div class="photo-previews" id="photoPreviews"></div>
+      </div>
+
+      <!-- Campos del producto -->
+      <div class="sell-fields">
+        <div class="field">
+          <label>Título del producto</label>
+          <input type="text" id="sellTitle" placeholder="Ej. Tenis Nike Air Max 90 talla 27">
+        </div>
+        <div class="field">
+          <label>Descripción</label>
+          <textarea id="sellDesc" placeholder="Describe el estado, talla, color, antigüedad..." rows="3"></textarea>
+        </div>
+        <div class="fields-row">
+          <div class="field">
+            <label>Categoría</label>
+            <select id="sellCategory">
+              <option value="">Selecciona</option>
+              <option value="ropa">Ropa</option>
+              <option value="calzado">Calzado</option>
+              <option value="pantalones">Pantalones</option>
+              <option value="perfume">Perfumes</option>
+              <option value="accesorio">Accesorios</option>
+              <option value="electronico">Electrónica</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Precio (MXN)</label>
+            <div class="price-input">
+              <span>$</span>
+              <input type="number" id="sellPrice" placeholder="0.00" min="0" step="0.01">
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Dirección / Zona de entrega</label>
+          <input type="text" id="sellAddress" placeholder="Ej. Col. Centro, Torreón, Coah.">
+        </div>
+        <div class="form-error" id="sellError"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeSell()">Cancelar</button>
+        <button class="btn-primary" onclick="publishProduct()">Publicar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL: CHECKOUT / PAGO (MercadoPago)
+  ═══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="checkoutOverlay" onclick="closeCheckoutIfOutside(event)">
+    <div class="modal checkout-modal" id="checkoutModal">
+      <div class="modal-header">
+        <span class="modal-title">Confirmar pago</span>
+        <button class="close-btn" onclick="closeCheckout()">✕</button>
+      </div>
+
+      <div class="checkout-summary" id="checkoutSummary"></div>
+
+      <div class="sell-fields">
+        <div class="section-label" style="margin-bottom:12px">Tus datos</div>
+        <div class="field">
+          <label>Nombre completo</label>
+          <input type="text" id="ckName" placeholder="Como aparece en tu ID" autocomplete="name">
+        </div>
+        <div class="field">
+          <label>Correo electrónico</label>
+          <input type="email" id="ckEmail" placeholder="tu@correo.com" autocomplete="email">
+        </div>
+
+        <div class="mp-notice" style="margin-top:16px;padding:12px;background:#f5f4f0;border-left:3px solid #0a0a0a;font-size:0.82rem;line-height:1.5;color:#444;">
+          <strong>Pago seguro con MercadoPago</strong><br>
+          Serás redirigido a la página oficial de MercadoPago para ingresar tu tarjeta de forma segura.
+        </div>
+
+        <div class="form-error" id="checkoutError"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeCheckout()">Cancelar</button>
+        <button class="btn-primary" id="payBtn" onclick="processPayment()">
+          <span id="payBtnText">Pagar con MercadoPago</span>
+          <span id="payBtnTotal"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MODAL: DETALLE DE PRODUCTO
+  ═══════════════════════════════════════════ -->
+  <div class="modal-overlay" id="detailOverlay" onclick="closeDetailIfOutside(event)">
+    <div class="modal detail-modal" id="detailModal">
+      <button class="close-btn detail-close" onclick="closeDetail()">✕</button>
+      <div class="detail-photos" id="detailPhotos"></div>
+      <div class="detail-info">
+        <div class="detail-category" id="detailCat"></div>
+        <h2 class="detail-title" id="detailTitle"></h2>
+        <div class="detail-price" id="detailPrice"></div>
+        <div class="detail-desc" id="detailDesc"></div>
+        <div class="detail-meta">
+          <div class="detail-seller">
+            <div class="mini-avatar" id="detailSellerAvatar"></div>
+            <span id="detailSellerName"></span>
+          </div>
+          <div class="detail-location">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5C5.515 1.5 3.5 3.515 3.5 6c0 3.75 4.5 8.5 4.5 8.5s4.5-4.75 4.5-8.5c0-2.485-2.015-4.5-4.5-4.5z" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.2"/></svg>
+            <span id="detailAddress"></span>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <button class="btn-ghost like-btn" id="detailLikeBtn" onclick="toggleLike()">
+            <svg viewBox="0 0 20 20" fill="none" id="likeIcon"><path d="M10 17s-7-4.5-7-9a5 5 0 0110 0" stroke="currentColor" stroke-width="1.5"/><path d="M10 17s7-4.5 7-9a5 5 0 00-10 0" stroke="currentColor" stroke-width="1.5"/></svg>
+            Me gusta
+          </button>
+          <button class="btn-primary" onclick="addToCartFromDetail()">Comprar ahora</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TOAST NOTIFICATIONS
+  ═══════════════════════════════════════════ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- Hero / Banner intro (solo cuando no hay búsqueda activa) -->
+    <section class="hero" id="hero">
+      <div class="hero-text">
+        <h1>Segunda mano.<br><em>Primera elección.</em></h1>
+        <p>Compra y vende artículos cerca de ti. Sin intermediarios.</p>
+      </div>
+      <div class="hero-numbers">
+        <div class="hero-stat">
+          <span class="big-num" id="heroProducts">0</span>
+          <span>artículos</span>
+        </div>
+        <div class="hero-stat">
+          <span class="big-num" id="heroSellers">0</span>
+          <span>vendedores</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grid de productos -->
+    <section class="products-section">
+      <div class="section-header">
+        <span class="section-label" id="sectionLabel">Todos los artículos</span>
+        <span class="products-count" id="productsCount">0 artículos</span>
+      </div>
+      <div class="products-grid" id="productsGrid">
+        <!-- Cards generadas por JS -->
+      </div>
+      <div class="empty-products hidden" id="emptyProducts">
+        <svg viewBox="0 0 80 80" fill="none">
+          <rect x="10" y="20" width="60" height="45" rx="4" stroke="currentColor" stroke-width="1.5" opacity=".3"/>
+          <path d="M25 35h30M25 45h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" opacity=".3"/>
+        </svg>
+        <p>No hay artículos aquí todavía.</p>
+        <button class="btn-primary" onclick="openSell()">Sé el primero en vender</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════ -->
+  <footer class="footer">
+    <span class="logo-text small">TRUEQUE</span>
+    <span>— Hecho en México 🇲🇽</span>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

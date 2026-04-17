@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/assets/favicon-32.png" type="image/png">
+  <link rel="manifest" href="/manifest.json">
+  <title>Resultado del pago — TRUEQUE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .result-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    .result-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 1.5rem;
+    }
+    .result-icon.success { background: #d4edda; }
+    .result-icon.failure { background: #f8d7da; }
+    .result-icon.pending { background: #fff3cd; }
+    .result-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #0a0a0a;
+    }
+    .result-msg {
+      color: #666;
+      margin-bottom: 2rem;
+      max-width: 360px;
+      line-height: 1.6;
+    }
+    .back-link {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      background: #0a0a0a;
+      color: #f5f4f0;
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+    .back-link:hover { background: #333; }
+  </style>
+</head>
+<body>
+  <div class="result-page" id="resultPage">
+    <!-- Contenido generado por JS según ?status= -->
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('status') || 'unknown';
+
+    const states = {
+      success: {
+        icon: '✓',
+        cls: 'success',
+        title: '¡Pago confirmado!',
+        msg: 'Tu pago fue procesado exitosamente. El vendedor se pondrá en contacto contigo pronto.',
+      },
+      failure: {
+        icon: '✕',
+        cls: 'failure',
+        title: 'Pago rechazado',
+        msg: 'Hubo un problema con tu pago. Verifica los datos de tu tarjeta e intenta de nuevo.',
+      },
+      pending: {
+        icon: '⏳',
+        cls: 'pending',
+        title: 'Pago pendiente',
+        msg: 'Tu pago está siendo procesado. Te notificaremos cuando se confirme.',
+      },
+    };
+
+    const s = states[status] || {
+      icon: '?',
+      cls: 'pending',
+      title: 'Estado desconocido',
+      msg: 'No pudimos determinar el estado de tu pago.',
+    };
+
+    document.getElementById('resultPage').innerHTML = `
+      <a href="/" class="logo-text" style="font-family:'DM Mono',monospace;text-decoration:none;color:#0a0a0a;font-size:1.2rem;margin-bottom:3rem;display:block">TRUEQUE<span style="display:inline-block;width:6px;height:6px;background:#0a0a0a;border-radius:50%;margin-left:4px;vertical-align:middle"></span></a>
+      <div class="result-icon ${s.cls}">${s.icon}</div>
+      <h1 class="result-title">${s.title}</h1>
+      <p class="result-msg">${s.msg}</p>
+      <a href="/" class="back-link">← Volver a la tienda</a>
+    `;
+  </script>
+</body>
+</html>

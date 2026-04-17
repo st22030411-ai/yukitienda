@@ -1,0 +1,17 @@
+# render.yaml
+# ─────────────────────────────────────────────
+# Configuración de despliegue para Render.com
+# Render detecta este archivo automáticamente
+# ─────────────────────────────────────────────
+
+services:
+  - type: web
+    name: trueque-pagos
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MP_ACCESS_TOKEN
+        sync: false          # Lo pones manualmente en el panel de Render
+      - key: BASE_URL
+        sync: false          # Render te da la URL después de crear el servicio

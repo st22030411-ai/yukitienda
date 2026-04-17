@@ -1,0 +1,30 @@
+# Entorno Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Variables de entorno — NUNCA subir al repo
+.env
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Carpetas de proyecto secundarias / basura
+yukitienda/
+node_modules/
